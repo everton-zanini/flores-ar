@@ -11,25 +11,27 @@
         height: 100%;
         background: transparent;
       }
+
       video {
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
-        object-fit: cover; /* Tente usar 'contain' se quiser evitar corte */
+        object-fit: contain; /* Mostrar toda a imagem da câmera */
         z-index: -1;
         background: transparent;
       }
+
       .flower {
         position: absolute;
-        width: 80px;
+        width: 80px; /* Dobrado o tamanho */
         height: 80px;
         pointer-events: none;
         z-index: 1;
         animation: fall linear forwards;
-        background: transparent;
       }
+
       @keyframes fall {
         0% {
           transform: translateY(-50px) rotate(0deg);
@@ -48,13 +50,13 @@
     <script>
       const video = document.getElementById('video');
 
-      // Ativar câmera traseira com resolução vertical personalizada
+      // Ativar câmera traseira com resolução menor
       navigator.mediaDevices
         .getUserMedia({
           video: {
-            facingMode: 'environment',
-            width: { ideal: 1080 },
-            height: { ideal: 1960 }
+            facingMode: { exact: 'environment' },
+            width: { ideal: 640 },
+            height: { ideal: 480 }
           }
         })
         .then((stream) => {
@@ -66,23 +68,21 @@
           alert('Não foi possível acessar a câmera. Verifique as permissões.');
         });
 
-      // Criar flores caindo
+      // Criar pétalas de rosa
       function createFlower() {
         const flower = document.createElement('img');
-        flower.src = 'petala.png'; // Certifique-se que essa imagem tem fundo transparente
-        flower.alt = 'Flor';
+        flower.src = 'petala.png'; // Certifique-se de que o arquivo está no mesmo diretório
         flower.className = 'flower';
         flower.style.left = `${Math.random() * window.innerWidth}px`;
         flower.style.animationDuration = `${3 + Math.random() * 3}s`;
         document.body.appendChild(flower);
-
         setTimeout(() => flower.remove(), 6000);
       }
 
-      // Criar flores a cada 300ms
+      // Criar flores continuamente
       setInterval(createFlower, 300);
 
-      // Ajustar tamanho do vídeo ao redimensionar a tela
+      // Ajustar vídeo ao redimensionar
       window.addEventListener('resize', () => {
         video.style.width = `${window.innerWidth}px`;
         video.style.height = `${window.innerHeight}px`;
