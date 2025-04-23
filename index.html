@@ -9,7 +9,7 @@
         padding: 0;
         overflow: hidden;
         height: 100%;
-        background: transparent;
+        background-color: #ffe4f0; /* Fundo rosa claro */
       }
 
       video {
@@ -18,14 +18,13 @@
         left: 0;
         width: 100vw;
         height: 100vh;
-        object-fit: contain; /* Mostrar toda a imagem da câmera */
+        object-fit: contain;
         z-index: -1;
-        background: transparent;
       }
 
       .flower {
         position: absolute;
-        width: 80px; /* Dobrado o tamanho */
+        width: 80px;
         height: 80px;
         pointer-events: none;
         z-index: 1;
@@ -42,15 +41,29 @@
           opacity: 1;
         }
       }
+
+      .logo {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        width: 180px;
+        opacity: 0.95;
+      }
     </style>
   </head>
   <body>
+    <!-- Logo fixo no topo -->
+    <img class="logo" src="logo.png" alt="Logo da Igreja" />
+
+    <!-- Vídeo da câmera -->
     <video id="video" autoplay muted playsinline></video>
 
     <script>
       const video = document.getElementById('video');
 
-      // Ativar câmera traseira com resolução menor
+      // Câmera traseira com resolução menor
       navigator.mediaDevices
         .getUserMedia({
           video: {
@@ -68,10 +81,10 @@
           alert('Não foi possível acessar a câmera. Verifique as permissões.');
         });
 
-      // Criar pétalas de rosa
+      // Criar pétalas
       function createFlower() {
         const flower = document.createElement('img');
-        flower.src = 'petala.png'; // Certifique-se de que o arquivo está no mesmo diretório
+        flower.src = 'petala.png'; // Caminho da imagem
         flower.className = 'flower';
         flower.style.left = `${Math.random() * window.innerWidth}px`;
         flower.style.animationDuration = `${3 + Math.random() * 3}s`;
@@ -79,10 +92,10 @@
         setTimeout(() => flower.remove(), 6000);
       }
 
-      // Criar flores continuamente
+      // Iniciar a "chuva" de pétalas
       setInterval(createFlower, 300);
 
-      // Ajustar vídeo ao redimensionar
+      // Ajustar vídeo em caso de redimensionamento
       window.addEventListener('resize', () => {
         video.style.width = `${window.innerWidth}px`;
         video.style.height = `${window.innerHeight}px`;
