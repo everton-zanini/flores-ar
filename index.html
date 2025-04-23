@@ -2,13 +2,14 @@
 <html>
   <head>
     <title>Flores Caindo - Filtro AR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
       body, html {
         margin: 0;
         padding: 0;
         overflow: hidden;
         height: 100%;
-        background: black;
+        background: transparent; /* Remover fundo preto */
       }
       video {
         position: fixed;
@@ -17,13 +18,15 @@
         width: 100vw;
         height: 100vh;
         object-fit: cover;
-        z-index: -1;
+        z-index: -1; /* Garantir que o vídeo fique no fundo */
+        background: transparent;
       }
       .flower {
         position: absolute;
         width: 40px;
         height: 40px;
         pointer-events: none;
+        z-index: 1; /* Garantir que as pétalas fiquem acima do vídeo */
         animation: fall linear forwards;
       }
       @keyframes fall {
@@ -44,25 +47,45 @@
     <script>
       const video = document.getElementById('video');
 
-      // Ativar câmera
-      navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-        video.srcObject = stream;
-      });
+      // Ativar câmera com configurações para dispositivos móveis
+      navigator.mediaDevices
+        .getUserMedia({
+          video: {
+            facingMode: 'user', // Usar câmera frontal (selfie)
+            width: { ideal: window.innerWidth },
+            height: { ideal: window.innerHeight }
+          }
+        })
+        .then((stream) => {
+          video.srcObject = stream;
+          video.play(); // Garantir que o vídeo comece a tocar
+        })
+        .catch((err) => {
+          console.error('Erro ao acessar a câmera:', err);
+          alert('Não foi possível acessar a câmera. Verifique as permissões.');
+        });
 
       // Criar flores
       function createFlower() {
         const flower = document.createElement('img');
-        flower.src = 'petala.png'; // imagem de flor (PNG transparente)
+        flower.src = 'petala.png'; // Verifique se o caminho está correto no GitHub Pages
         flower.className = 'flower';
         flower.style.left = `${Math.random() * window.innerWidth}px`;
         flower.style.animationDuration = `${3 + Math.random() * 3}s`;
         document.body.appendChild(flower);
 
-        setTimeout(() => flower.remove(), 7000); // remove do DOM depois de cair
+        // Remover a flor após a animação
+        setTimeout(() => flower.remove(), 6000);
       }
 
       // Loop criando flores
       setInterval(createFlower, 300);
+
+      // Ajustar vídeo ao redimensionar a janela
+      window.addEventListener('resize', () => {
+        video.style.width = `${window.innerWidth}px`;
+        video.style.height = `${window.innerHeight}px`;
+      });
     </script>
   </body>
 </html>
