@@ -9,7 +9,7 @@
         padding: 0;
         overflow: hidden;
         height: 100%;
-        background: transparent; /* Remover fundo preto */
+        background: transparent; /* Fundo transparente */
       }
       video {
         position: fixed;
@@ -26,8 +26,9 @@
         width: 40px;
         height: 40px;
         pointer-events: none;
-        z-index: 1; /* Garantir que as pétalas fiquem acima do vídeo */
+        z-index: 1; /* Garantir que as flores fiquem acima do vídeo */
         animation: fall linear forwards;
+        background: transparent; /* Garantir que a flor tenha fundo transparente */
       }
       @keyframes fall {
         0% {
@@ -47,7 +48,7 @@
     <script>
       const video = document.getElementById('video');
 
-      // Ativar câmera com configurações para dispositivos móveis
+      // Ativar a câmera com configurações para dispositivos móveis
       navigator.mediaDevices
         .getUserMedia({
           video: {
@@ -68,7 +69,8 @@
       // Criar flores
       function createFlower() {
         const flower = document.createElement('img');
-        flower.src = 'petala.png'; // Verifique se o caminho está correto no GitHub Pages
+        flower.src = 'petala.png'; // Verifique se o caminho da imagem está correto
+        flower.alt = 'Flor caindo'; // Texto alternativo para a imagem
         flower.className = 'flower';
         flower.style.left = `${Math.random() * window.innerWidth}px`;
         flower.style.animationDuration = `${3 + Math.random() * 3}s`;
