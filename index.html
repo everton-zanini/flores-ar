@@ -9,7 +9,7 @@
         padding: 0;
         overflow: hidden;
         height: 100%;
-        background-color: transparent; /* Fundo rosa claro */
+        background-color: transparent; /* Fundo transparente */
       }
 
       video {
@@ -38,7 +38,7 @@
         }
         100% {
           transform: translateY(100vh) rotate(360deg);
-          opacity: 1; 
+          opacity: 1;
         }
       }
 
@@ -48,28 +48,47 @@
         left: 50%;
         transform: translateX(-50%);
         z-index: 2;
-        width: 250px;
+        width: 150px;
         opacity: 0.95;
+      }
+
+      .capture-btn {
+        position: fixed;
+        bottom: 30px; /* Centralizado e abaixo do crop */
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        z-index: 3;
+        cursor: pointer;
       }
     </style>
   </head>
   <body>
-    <!-- Logo fixo no topo -->
-    <img class="logo" src="logo.png" alt="Logo da Igreja" />
+    <!-- Logo de teste -->
+    <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Heart_symbol.svg" alt="Logo de Teste" />
 
-    <!-- Vídeo da câmera -->
     <video id="video" autoplay muted playsinline></video>
+
+    <button class="capture-btn" onclick="captureImage()">Capturar Imagem</button>
 
     <script>
       const video = document.getElementById('video');
+      const captureBtn = document.querySelector('.capture-btn');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
 
-      // Câmera traseira com resolução menor
+      // Ativar a câmera
       navigator.mediaDevices
         .getUserMedia({
           video: {
             facingMode: { exact: 'environment' },
             width: { ideal: 640 },
-            height: { ideal: 1080 },
+            height: { ideal: 480 }
           }
         })
         .then((stream) => {
@@ -81,10 +100,9 @@
           alert('Não foi possível acessar a câmera. Verifique as permissões.');
         });
 
-      // Criar pétalas
       function createFlower() {
         const flower = document.createElement('img');
-        flower.src = 'petala.png'; // Caminho da imagem
+        flower.src = 'petala.png';
         flower.className = 'flower';
         flower.style.left = `${Math.random() * window.innerWidth}px`;
         flower.style.animationDuration = `${3 + Math.random() * 3}s`;
@@ -92,14 +110,46 @@
         setTimeout(() => flower.remove(), 6000);
       }
 
-      // Iniciar a "chuva" de pétalas
       setInterval(createFlower, 300);
 
-      // Ajustar vídeo em caso de redimensionamento
       window.addEventListener('resize', () => {
         video.style.width = `${window.innerWidth}px`;
         video.style.height = `${window.innerHeight}px`;
       });
+
+      // Função para capturar imagem da tela
+      function captureImage() {
+        // Definindo o tamanho do canvas igual ao tamanho da tela
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Desenhando o conteúdo do vídeo no canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Adicionando as flores e o logo no canvas
+        document.querySelectorAll('.flower').forEach((flower) => {
+          const flowerImage = new Image();
+          flowerImage.src = flower.src;
+          flowerImage.onload = () => {
+            ctx.drawImage(flowerImage, parseInt(flower.style.left), parseInt(flower.style.top));
+          };
+        });
+
+        const logoImage = new Image();
+        logoImage.src = document.querySelector('.logo').src;
+        logoImage.onload = () => {
+          ctx.drawImage(logoImage, window.innerWidth / 2 - logoImage.width / 2, 10);
+        };
+
+        // Baixando a imagem
+        setTimeout(() => {
+          const dataUrl = canvas.toDataURL('image/png');
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = 'foto_ar.png';
+          link.click();
+        }, 500); // Aguarda um pouco para garantir que as imagens sejam desenhadas
+      }
     </script>
   </body>
 </html>
