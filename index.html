@@ -9,7 +9,7 @@
         padding: 0;
         overflow: hidden;
         height: 100%;
-        background-color: #ffe4f0; /* Fundo rosa claro */
+        background-color: transparent; /* Fundo rosa claro */
       }
 
       video {
@@ -69,7 +69,7 @@
           video: {
             facingMode: { exact: 'environment' },
             width: { ideal: 640 },
-            height: { ideal: 480 }
+            height: { ideal: 1080 },
           }
         })
         .then((stream) => {
