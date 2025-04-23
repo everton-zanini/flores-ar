@@ -17,13 +17,13 @@
         left: 0;
         width: 100vw;
         height: 100vh;
-        object-fit: cover;
+        object-fit: cover; /* Tente usar 'contain' se quiser evitar corte */
         z-index: -1;
         background: transparent;
       }
       .flower {
         position: absolute;
-        width: 80px; /* Tamanho dobrado */
+        width: 80px;
         height: 80px;
         pointer-events: none;
         z-index: 1;
@@ -48,13 +48,13 @@
     <script>
       const video = document.getElementById('video');
 
-      // Ativar câmera traseira
+      // Ativar câmera traseira com resolução vertical personalizada
       navigator.mediaDevices
         .getUserMedia({
           video: {
             facingMode: 'environment',
-            width: { ideal: window.innerWidth },
-            height: { ideal: window.innerHeight }
+            width: { ideal: 1080 },
+            height: { ideal: 1960 }
           }
         })
         .then((stream) => {
@@ -66,11 +66,11 @@
           alert('Não foi possível acessar a câmera. Verifique as permissões.');
         });
 
-      // Criar flores
+      // Criar flores caindo
       function createFlower() {
         const flower = document.createElement('img');
-        flower.src = 'petala.png'; // Caminho para a imagem da pétala com fundo transparente
-        flower.alt = 'Flor caindo';
+        flower.src = 'petala.png'; // Certifique-se que essa imagem tem fundo transparente
+        flower.alt = 'Flor';
         flower.className = 'flower';
         flower.style.left = `${Math.random() * window.innerWidth}px`;
         flower.style.animationDuration = `${3 + Math.random() * 3}s`;
@@ -82,7 +82,7 @@
       // Criar flores a cada 300ms
       setInterval(createFlower, 300);
 
-      // Ajustar o vídeo quando a janela for redimensionada
+      // Ajustar tamanho do vídeo ao redimensionar a tela
       window.addEventListener('resize', () => {
         video.style.width = `${window.innerWidth}px`;
         video.style.height = `${window.innerHeight}px`;
